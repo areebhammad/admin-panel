@@ -181,7 +181,7 @@ function App() {
               <td className="border px-3 py-1">{member.role}</td>
               <td>
                 <button className="edit px-4 py-1 bg-blue-500 rounded-md text-white mx-2">
-                  <Link href="/${id}/edit">Edit</Link>
+                  <Link href="/edit">Edit</Link>
                 </button>
                 <button
                   className="delete-selected px-2 py-1 bg-red-500 rounded-md text-white"

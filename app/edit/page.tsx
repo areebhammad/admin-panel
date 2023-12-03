@@ -1,5 +1,7 @@
 import React from "react";
 
-const page = () => {
+const edit = () => {
   return <div>Edit Page</div>;
 };
+
+export default edit;
