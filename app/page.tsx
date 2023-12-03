@@ -1,14 +1,22 @@
 "use client";
-import { useState, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 import Link from "next/link";
 
-function App() {
-  const [members, setMembers] = useState([]);
-  const [displayedMembers, setDisplayedMembers] = useState([]);
-  const [page, setPage] = useState(1);
-  const [selected, setSelected] = useState([]);
+interface Member {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
 
-  const [editingId, setEditingId] = useState(null);
+interface Props {}
+
+const App: FC<Props> = () => {
+  const [members, setMembers] = useState<Member[]>([]);
+  const [displayedMembers, setDisplayedMembers] = useState<Member[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [selected, setSelected] = useState<number[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   const startEdit = (id: any) => {
     setEditingId(id);
@@ -18,19 +26,6 @@ function App() {
     setEditingId(null);
   };
 
-  const updateMember = (updatedMember: any) => {
-    const updatedMembers = members.map((m: any) => {
-      if (m.id === updatedMember.id) {
-        return updatedMember;
-      } else {
-        return m;
-      }
-    });
-
-    setMembers(updatedMembers);
-    setEditingId(null);
-  };
-  //
   useEffect(() => {
     fetchMembers();
   }, []);
@@ -39,20 +34,47 @@ function App() {
     const response = await fetch(
       "https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json"
     );
-    const data = await response.json();
+    const data: Member[] = await response.json();
     setMembers(data);
     setDisplayedMembers(getPage(data, page));
   };
 
+  // const updateMember = (updatedMember: Member) => {
+  //   const updatedMembers = members.map((m: Member) => {
+  //     if (m.id === updatedMember.id) {
+  //       return updatedMember;
+  //     } else {
+  //       return m;
+  //     }
+  //   });
+
+  //   setMembers(prevState => updatedMembers);
+
+  //   setEditingId(null);
+  // };
+  //
+  // useEffect(() => {
+  //   fetchMembers();
+  // }, []);
+
+  // const fetchMembers = async () => {
+  //   const response = await fetch(
+  //     "https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json"
+  //   );
+  //   const data = await response.json();
+  //   setMembers(data);
+  //   setDisplayedMembers(getPage(data, page));
+  // };
+
   // Edit row
-  const editRow = (id: any) => {
-    const member = members.find((m: any) => m.id === id);
+  // const editRow = (id: any) => {
+  //   const member = members.find((m: any) => m.id === id);
 
-    // Toggle edit mode
-    member.isEditing = !member.isEditing;
+  //   // Toggle edit mode
+  //   member.isEditing = !member.isEditing;
 
-    setMembers([...members]);
-  };
+  //   setMembers([...members]);
+  // };
 
   // Update edited row
   // const updateMember = (updatedMember: any) => {
@@ -66,18 +88,18 @@ function App() {
 
   //
 
-  const getPage = (data: any, page: any) => {
+  const getPage = (data: Member[], page: number) => {
     const start = (page - 1) * 10;
     const end = start + 10;
     return data.slice(start, end);
   };
 
-  const updatePage = (page: any) => {
+  const updatePage = (page: number) => {
     setPage(page);
     setDisplayedMembers(getPage(members, page));
   };
 
-  const onSearch = (e: any) => {
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value.toLowerCase();
     const filtered = members.filter((m) => {
       return (
@@ -90,7 +112,7 @@ function App() {
     setPage(1);
   };
 
-  const toggleSelect = (id: any) => {
+  const toggleSelect = (id: number) => {
     setSelected((selected) => {
       if (selected.includes(id)) {
         return selected.filter((x) => x !== id);
@@ -118,7 +140,7 @@ function App() {
     setSelected([]);
   };
 
-  const deleteRow = (id: any) => {
+  const deleteRow = (id: number) => {
     const filtered = members.filter((m) => m.id !== id);
     setMembers(filtered);
 
@@ -166,8 +188,11 @@ function App() {
           </tr>
         </thead>
         <tbody className="border">
-          {displayedMembers.map((member: any) => (
-            <tr key={member.id} selected={selected.includes(member.id)}>
+          {displayedMembers.map((member) => (
+            <tr
+              key={member.id}
+              className={selected.includes(member.id) ? "selected" : ""}
+            >
               <td>
                 <input
                   type="checkbox"
@@ -226,6 +251,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;

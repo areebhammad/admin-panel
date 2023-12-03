@@ -20,3 +20,7 @@ body {
   color: black;
   background: white;
 }
+
+.selected {
+  background-color: #eee;
+}
